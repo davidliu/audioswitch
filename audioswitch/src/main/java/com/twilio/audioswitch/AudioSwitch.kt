@@ -109,18 +109,27 @@ class AudioSwitch : AbstractAudioSwitch {
 
     override fun onActivate(audioDevice: AudioDevice) {
         this.logger.d(TAG_AUDIO_SWITCH, "onActivate($audioDevice)")
-        when (audioDevice) {
-            is BluetoothHeadset -> {
-                this.audioDeviceManager.enableSpeakerphone(false)
-                this.audioDeviceManager.enableBluetoothSco(true)
-            }
-            is Earpiece, is WiredHeadset -> {
-                this.audioDeviceManager.enableSpeakerphone(false)
-                this.audioDeviceManager.enableBluetoothSco(false)
-            }
-            is Speakerphone -> {
-                this.audioDeviceManager.enableBluetoothSco(false)
-                this.audioDeviceManager.enableSpeakerphone(true)
+
+        val useLegacyApi = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            this.audioDeviceManager.setCommunicationDevice(audioDevice)
+        } else {
+            true
+        }
+
+        if(useLegacyApi) {
+            when (audioDevice) {
+                is BluetoothHeadset -> {
+                    this.audioDeviceManager.enableSpeakerphone(false)
+                    this.audioDeviceManager.enableBluetoothSco(true)
+                }
+                is Earpiece, is WiredHeadset -> {
+                    this.audioDeviceManager.enableSpeakerphone(false)
+                    this.audioDeviceManager.enableBluetoothSco(false)
+                }
+                is Speakerphone -> {
+                    this.audioDeviceManager.enableBluetoothSco(false)
+                    this.audioDeviceManager.enableSpeakerphone(true)
+                }
             }
         }
     }

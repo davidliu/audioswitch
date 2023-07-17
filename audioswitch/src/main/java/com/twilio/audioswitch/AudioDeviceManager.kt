@@ -8,6 +8,7 @@ import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.AudioManager.OnAudioFocusChangeListener
 import android.os.Build
+import androidx.annotation.RequiresApi
 import com.twilio.audioswitch.android.BuildWrapper
 import com.twilio.audioswitch.android.Logger
 
@@ -76,6 +77,54 @@ internal class AudioDeviceManager(
          * if this is not set.
          */
         audioManager.mode = audioMode
+    }
+
+    /**
+     * @return true if succesfully set.
+     */
+    @RequiresApi(Build.VERSION_CODES.S)
+    fun setCommunicationDevice(audioDevice: AudioDevice): Boolean {
+        this.logger.d(TAG, "setCommunicationDevice($audioDevice)")
+        val commDevices = audioManager.availableCommunicationDevices
+
+        val audioDeviceInfo = when (audioDevice) {
+            is AudioDevice.BluetoothHeadset -> {
+                commDevices.firstOrNull { info ->
+                    info.type == AudioDeviceInfo.TYPE_BLUETOOTH_SCO || info.type == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP
+                }
+            }
+
+            is AudioDevice.Earpiece -> {
+                commDevices.firstOrNull { info ->
+                    info.type == AudioDeviceInfo.TYPE_BUILTIN_EARPIECE
+                }
+            }
+
+            is AudioDevice.Speakerphone -> {
+                commDevices.firstOrNull { info ->
+                    info.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER
+                }
+            }
+
+            is AudioDevice.WiredHeadset -> {
+                commDevices.firstOrNull { info ->
+                    info.type == AudioDeviceInfo.TYPE_WIRED_HEADSET || info.type == AudioDeviceInfo.TYPE_WIRED_HEADPHONES
+                }
+            }
+        }
+
+        if (audioDeviceInfo != null) {
+            audioManager.setCommunicationDevice(audioDeviceInfo)
+            return true
+        }
+
+        this.logger.d(TAG, "couldn't find any corresponding communication devices!")
+        return false
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    fun clearCommunicationDevice() {
+        audioManager.clearCommunicationDevice()
     }
 
     fun enableBluetoothSco(enable: Boolean) {
