@@ -11,8 +11,8 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import junitparams.JUnitParamsRunner
 import junitparams.Parameters
-import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.assertNotNull
@@ -135,7 +135,11 @@ class AudioSwitchTest : BaseTest() {
 
         whenever(buildWrapper.getVersion()).thenReturn(Build.VERSION_CODES.O)
         val audioFocusRequest = mock<AudioFocusRequest>()
-        whenever(this.audioFocusRequest.buildRequest(defaultAudioFocusChangeListener)).thenReturn(audioFocusRequest)
+        whenever(
+            this.audioFocusRequest.buildRequest(
+                defaultAudioFocusChangeListener,
+            )
+        ).thenReturn(audioFocusRequest)
         audioSwitch.start(audioDeviceChangeListener)
         audioSwitch.activate()
 
@@ -148,7 +152,11 @@ class AudioSwitchTest : BaseTest() {
 
         whenever(buildWrapper.getVersion()).thenReturn(Build.VERSION_CODES.O_MR1)
         val audioFocusRequest = mock<AudioFocusRequest>()
-        whenever(this.audioFocusRequest.buildRequest(defaultAudioFocusChangeListener)).thenReturn(audioFocusRequest)
+        whenever(
+            this.audioFocusRequest.buildRequest(
+                defaultAudioFocusChangeListener,
+            )
+        ).thenReturn(audioFocusRequest)
         audioSwitch.start(audioDeviceChangeListener)
         audioSwitch.activate()
 
@@ -175,7 +183,11 @@ class AudioSwitchTest : BaseTest() {
         audioSwitch.manageAudioFocus = false
         whenever(buildWrapper.getVersion()).thenReturn(Build.VERSION_CODES.O)
         val audioFocusRequest = mock<AudioFocusRequest>()
-        whenever(this.audioFocusRequest.buildRequest(defaultAudioFocusChangeListener)).thenReturn(audioFocusRequest)
+        whenever(
+            this.audioFocusRequest.buildRequest(
+                defaultAudioFocusChangeListener,
+            )
+        ).thenReturn(audioFocusRequest)
         audioSwitch.start(audioDeviceChangeListener)
         audioSwitch.activate()
 
@@ -187,7 +199,11 @@ class AudioSwitchTest : BaseTest() {
         val audioSwitch = audioSwitch
         whenever(buildWrapper.getVersion()).thenReturn(Build.VERSION_CODES.O)
         val audioFocusRequest = mock<AudioFocusRequest>()
-        whenever(this.audioFocusRequest.buildRequest(defaultAudioFocusChangeListener)).thenReturn(audioFocusRequest)
+        whenever(
+            this.audioFocusRequest.buildRequest(
+                defaultAudioFocusChangeListener,
+            )
+        ).thenReturn(audioFocusRequest)
         audioSwitch.start(audioDeviceChangeListener)
         audioSwitch.activate()
         audioSwitch.stop()
@@ -200,7 +216,11 @@ class AudioSwitchTest : BaseTest() {
         val audioSwitch = audioSwitch
         whenever(buildWrapper.getVersion()).thenReturn(Build.VERSION_CODES.O_MR1)
         val audioFocusRequest = mock<AudioFocusRequest>()
-        whenever(this.audioFocusRequest.buildRequest(defaultAudioFocusChangeListener)).thenReturn(audioFocusRequest)
+        whenever(
+            this.audioFocusRequest.buildRequest(
+                defaultAudioFocusChangeListener,
+            )
+        ).thenReturn(audioFocusRequest)
         audioSwitch.start(audioDeviceChangeListener)
         audioSwitch.activate()
         audioSwitch.stop()
