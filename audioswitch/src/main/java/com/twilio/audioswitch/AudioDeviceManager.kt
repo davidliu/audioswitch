@@ -105,6 +105,7 @@ internal class AudioDeviceManager(
         enableSpeakerphone(savedSpeakerphoneEnabled)
         if (build.getVersion() >= Build.VERSION_CODES.O) {
             audioRequest?.let { audioManager.abandonAudioFocusRequest(it) }
+            audioRequest = null
         } else {
             audioManager.abandonAudioFocus(audioFocusChangeListener)
         }

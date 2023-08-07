@@ -101,6 +101,13 @@ abstract class AbstractAudioSwitch
             this.audioDeviceManager.focusMode = value
         }
 
+    /**
+     * When true, AudioSwitch will request audio focus upon activation and abandon upon deactivation.
+     *
+     * Defaults to true.
+     */
+    var manageAudioFocus = true
+
     init {
         this.preferredDeviceList = getPreferredDeviceList(preferredDeviceList)
         this.availableUniqueAudioDevices =
@@ -191,7 +198,9 @@ abstract class AbstractAudioSwitch
 
                 // Always set mute to false for WebRTC
                 audioDeviceManager.mute(false)
-                audioDeviceManager.setAudioFocus()
+                if(manageAudioFocus) {
+                    audioDeviceManager.setAudioFocus()
+                }
                 selectedAudioDevice?.let { this.onActivate(it) }
                 state = ACTIVATED
             }
