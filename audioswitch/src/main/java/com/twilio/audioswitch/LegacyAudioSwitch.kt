@@ -121,15 +121,21 @@ class LegacyAudioSwitch : AbstractAudioSwitch {
     }
 
     override fun onActivate(audioDevice: AudioDevice) {
+        if (!shouldHandleAudioRouting()) {
+            return
+        }
+
         when (audioDevice) {
             is BluetoothHeadset -> {
                 this.audioDeviceManager.enableSpeakerphone(false)
                 this.headsetManager?.activate()
             }
+
             is Earpiece, is WiredHeadset -> {
                 this.audioDeviceManager.enableSpeakerphone(false)
                 this.headsetManager?.deactivate()
             }
+
             is Speakerphone -> {
                 this.audioDeviceManager.enableSpeakerphone(true)
                 this.headsetManager?.deactivate()

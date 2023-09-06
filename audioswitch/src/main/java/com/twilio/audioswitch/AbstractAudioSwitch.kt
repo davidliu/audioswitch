@@ -145,6 +145,7 @@ abstract class AbstractAudioSwitch
         set(value) {
             this.audioDeviceManager.audioAttributeUsageType = value
         }
+
     /**
      * The audio attribute content type to use when requesting audio focus on devices O and beyond.
      *
@@ -161,6 +162,15 @@ abstract class AbstractAudioSwitch
             this.audioDeviceManager.audioAttributeContentType = value
         }
 
+    /**
+     * On certain Android devices, audio routing does not function properly and bluetooth SCO will not work
+     * unless audio mode is set to [AudioManager.MODE_IN_COMMUNICATION] or [AudioManager.MODE_IN_CALL].
+     *
+     * AudioSwitch by default will not handle audio routing in those cases to avoid audio issues.
+     *
+     * If this set to true, AudioSwitch will attempt to do audio routing, though behavior is undefined.
+     */
+    var forceHandleAudioRouting = false
 
     init {
         this.preferredDeviceList = getPreferredDeviceList(preferredDeviceList)
@@ -171,7 +181,7 @@ abstract class AbstractAudioSwitch
     }
 
     fun setPreferredDeviceList(preferredDeviceList: List<Class<out AudioDevice>>) {
-        if(preferredDeviceList == this.preferredDeviceList) {
+        if (preferredDeviceList == this.preferredDeviceList) {
             return
         }
 
@@ -356,6 +366,12 @@ abstract class AbstractAudioSwitch
 
     protected abstract fun onActivate(audioDevice: AudioDevice)
     protected abstract fun onDeactivate()
+
+    protected fun shouldHandleAudioRouting(): Boolean {
+        val audioMode = this.audioMode
+
+        return forceHandleAudioRouting || audioMode == AudioManager.MODE_IN_COMMUNICATION || audioMode == AudioManager.MODE_IN_CALL
+    }
 
     companion object {
         /**
