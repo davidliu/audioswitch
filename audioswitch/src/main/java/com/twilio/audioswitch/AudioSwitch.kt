@@ -110,9 +110,6 @@ class AudioSwitch : AbstractAudioSwitch {
     override fun onActivate(audioDevice: AudioDevice) {
         this.logger.d(TAG_AUDIO_SWITCH, "onActivate($audioDevice)")
 
-        if (!shouldHandleAudioRouting()) {
-            return
-        }
         when (audioDevice) {
             is BluetoothHeadset -> {
                 this.audioDeviceManager.enableSpeakerphone(false)

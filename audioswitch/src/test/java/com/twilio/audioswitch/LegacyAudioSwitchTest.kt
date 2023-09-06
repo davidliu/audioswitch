@@ -28,6 +28,7 @@ import junitparams.JUnitParamsRunner
 import junitparams.Parameters
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
@@ -473,6 +474,7 @@ class LegacyAudioSwitchTest : BaseTest() {
 
             verify(audioDeviceManagerSpy, never()).enableBluetoothSco(any())
             verify(audioDeviceManagerSpy, never()).enableSpeakerphone(any())
+            assertThat(audioSwitch.selectedAudioDevice, nullValue())
         }
     }
 
@@ -512,10 +514,11 @@ class LegacyAudioSwitchTest : BaseTest() {
             start(this@LegacyAudioSwitchTest.audioDeviceChangeListener)
             simulateNewBluetoothHeadsetConnection(audioSwitch.headsetManager)
             activate()
-            audioSwitch.onDeviceConnected(AudioDevice.Speakerphone())
-            audioSwitch.onDeviceConnected(AudioDevice.Earpiece())
+            onDeviceConnected(AudioDevice.Speakerphone())
+            onDeviceConnected(AudioDevice.Earpiece())
 
             verify(audioDeviceManagerSpy, atLeastOnce()).enableSpeakerphone(any())
+            assertThat(selectedAudioDevice, notNullValue())
         }
     }
 

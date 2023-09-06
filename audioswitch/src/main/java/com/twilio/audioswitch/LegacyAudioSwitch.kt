@@ -121,10 +121,6 @@ class LegacyAudioSwitch : AbstractAudioSwitch {
     }
 
     override fun onActivate(audioDevice: AudioDevice) {
-        if (!shouldHandleAudioRouting()) {
-            return
-        }
-
         when (audioDevice) {
             is BluetoothHeadset -> {
                 this.audioDeviceManager.enableSpeakerphone(false)

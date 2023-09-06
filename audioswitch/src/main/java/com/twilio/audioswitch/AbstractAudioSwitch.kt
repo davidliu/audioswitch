@@ -323,7 +323,14 @@ abstract class AbstractAudioSwitch
         this.selectAudioDevice(wasListChanged = false, audioDevice = audioDevice)
     }
 
+    protected fun shouldHandleAudioRouting(): Boolean {
+        val audioMode = this.audioMode
+
+        return forceHandleAudioRouting || audioMode == AudioManager.MODE_IN_COMMUNICATION || audioMode == AudioManager.MODE_IN_CALL
+    }
+
     protected fun selectAudioDevice(wasListChanged: Boolean, audioDevice: AudioDevice? = this.getBestDevice()) {
+
         if (selectedAudioDevice == audioDevice) {
             if (wasListChanged) {
                 audioDeviceChangeListener?.invoke(availableUniqueAudioDevices.toList(), selectedAudioDevice)
@@ -332,15 +339,16 @@ abstract class AbstractAudioSwitch
         }
 
         // Select the audio device
-        logger.d(TAG_AUDIO_SWITCH, "Current user selected AudioDevice = $userSelectedAudioDevice")
-        selectedAudioDevice = audioDevice
+        if (shouldHandleAudioRouting()) {
+            logger.d(TAG_AUDIO_SWITCH, "Current user selected AudioDevice = $userSelectedAudioDevice")
+            selectedAudioDevice = audioDevice
 
-        // Activate the device if in the active state
-        if (state == ACTIVATED) {
-            activate()
+            // Activate the device if in the active state
+            if (state == ACTIVATED) {
+                activate()
+            }
         }
         // trigger audio device change listener if there has been a change
-
         audioDeviceChangeListener?.invoke(availableUniqueAudioDevices.toList(), selectedAudioDevice)
     }
 
@@ -366,12 +374,6 @@ abstract class AbstractAudioSwitch
 
     protected abstract fun onActivate(audioDevice: AudioDevice)
     protected abstract fun onDeactivate()
-
-    protected fun shouldHandleAudioRouting(): Boolean {
-        val audioMode = this.audioMode
-
-        return forceHandleAudioRouting || audioMode == AudioManager.MODE_IN_COMMUNICATION || audioMode == AudioManager.MODE_IN_CALL
-    }
 
     companion object {
         /**
