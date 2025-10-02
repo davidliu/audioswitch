@@ -37,12 +37,28 @@ internal class AudioDeviceManager(
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     var audioAttributeContentType = AudioAttributes.CONTENT_TYPE_SPEECH
 
+    @SuppressLint("NewApi")
     fun hasEarpiece(): Boolean {
-        val hasEarpiece = context.packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)
-        if (hasEarpiece) {
-            logger.d(TAG, "Earpiece available")
+        return if (
+            build.getVersion() >= Build.VERSION_CODES.M &&
+            context.packageManager.hasSystemFeature(PackageManager.FEATURE_AUDIO_OUTPUT)
+        ) {
+            val devices = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
+            for (device in devices) {
+                if (device.type == AudioDeviceInfo.TYPE_BUILTIN_EARPIECE) {
+                    logger.d(TAG, "Earpiece available")
+                    return true
+                }
+            }
+            false
+        } else {
+            // Fallback to telephony feature check for older Android versions
+            val hasEarpiece = context.packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)
+            if (hasEarpiece) {
+                logger.d(TAG, "Earpiece available")
+            }
+            hasEarpiece
         }
-        return hasEarpiece
     }
 
     @SuppressLint("NewApi")
