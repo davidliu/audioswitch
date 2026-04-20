@@ -25,9 +25,8 @@ import org.junit.runner.RunWith
 @RunWith(JUnitParamsRunner::class)
 class ModernAudioSwitchTest : BaseTest() {
 
-    internal val packageManager = mock<PackageManager> {
-        whenever(mock.hasSystemFeature(any())).thenReturn(true)
-    }
+    internal val packageManager =
+            mock<PackageManager> { whenever(mock.hasSystemFeature(any())).thenReturn(true) }
 
     @Before
     fun setUp() {
@@ -80,9 +79,10 @@ class ModernAudioSwitchTest : BaseTest() {
 
     @Test
     fun `activate should enable audio routing to the wired headset device`() {
-        val audioSwitch = getModernAudioSwitch(
-            setupAudioDeviceScannerMock(),
-        )
+        val audioSwitch =
+                getModernAudioSwitch(
+                        setupAudioDeviceScannerMock(),
+                )
         audioSwitch.start(audioDeviceChangeListener)
         audioSwitch.onDeviceConnected(AudioDevice.WiredHeadset())
         audioSwitch.activate()
@@ -118,18 +118,19 @@ class ModernAudioSwitchTest : BaseTest() {
     @Test(expected = IllegalArgumentException::class)
     fun `constructor should throw an IllegalArgumentException given duplicate preferred devices`() {
         AudioSwitch(
-            context = context,
-            logger = logger,
-            audioDeviceManager = audioDeviceManager,
-            audioFocusChangeListener = defaultAudioFocusChangeListener,
-            preferredDeviceList = listOf(
-                AudioDevice.Speakerphone::class.java,
-                AudioDevice.BluetoothHeadset::class.java,
-                AudioDevice.Earpiece::class.java,
-                AudioDevice.Speakerphone::class.java
-            ),
-            audioManager = audioManager,
-            handler = handler,
+                context = context,
+                logger = logger,
+                audioDeviceManager = audioDeviceManager,
+                audioFocusChangeListener = defaultAudioFocusChangeListener,
+                preferredDeviceList =
+                        listOf(
+                                AudioDevice.Speakerphone::class.java,
+                                AudioDevice.BluetoothHeadset::class.java,
+                                AudioDevice.Earpiece::class.java,
+                                AudioDevice.Speakerphone::class.java
+                        ),
+                audioManager = audioManager,
+                handler = handler,
         )
     }
 
@@ -150,15 +151,18 @@ class ModernAudioSwitchTest : BaseTest() {
 
             audioSwitch.onDeviceConnected(AudioDevice.BluetoothHeadset("$DEVICE_NAME 2"))
 
-            assertThat(selectedAudioDevice, equalTo(AudioDevice.BluetoothHeadset(secondBluetoothDevice.name)))
+            assertThat(
+                    selectedAudioDevice,
+                    equalTo(AudioDevice.BluetoothHeadset(secondBluetoothDevice.name))
+            )
         }
     }
 
     @Parameters(source = EarpieceAndSpeakerParams::class)
     @Test
     fun `when configuring a new preferred device list, the correct device should be automatically selected and activated`(
-        preferredDeviceList: List<Class<out AudioDevice>>,
-        expectedDevice: AudioDevice
+            preferredDeviceList: List<Class<out AudioDevice>>,
+            expectedDevice: AudioDevice
     ) {
         val audioSwitch = getModernAudioSwitch(setupAudioDeviceScannerMock())
 
@@ -174,8 +178,8 @@ class ModernAudioSwitchTest : BaseTest() {
     @Parameters(source = WiredHeadsetParams::class)
     @Test
     fun `when configuring a new preferred device list, the correct device should be automatically selected and activated with a wired headset connected`(
-        preferredDeviceList: List<Class<out AudioDevice>>,
-        expectedDevice: AudioDevice
+            preferredDeviceList: List<Class<out AudioDevice>>,
+            expectedDevice: AudioDevice
     ) {
         val audioSwitch = getModernAudioSwitch(setupAudioDeviceScannerMock())
 
@@ -191,8 +195,8 @@ class ModernAudioSwitchTest : BaseTest() {
     @Parameters(source = BluetoothHeadsetParams::class)
     @Test
     fun `when configuring a new preferred device list, the correct device should be automatically selected and activated with a bluetooth headset connected`(
-        preferredDeviceList: List<Class<out AudioDevice>>,
-        expectedDevice: AudioDevice
+            preferredDeviceList: List<Class<out AudioDevice>>,
+            expectedDevice: AudioDevice
     ) {
         val audioSwitch = getModernAudioSwitch(setupAudioDeviceScannerMock())
 
@@ -209,7 +213,7 @@ class ModernAudioSwitchTest : BaseTest() {
     @Parameters(source = DefaultDeviceParams::class)
     @Test
     fun `when configuring a new preferred device list, all connected devices should be available but earpiece when a wired headset is connected`(
-        preferredDeviceList: List<Class<out AudioDevice>>
+            preferredDeviceList: List<Class<out AudioDevice>>
     ) {
         val audioSwitch = getModernAudioSwitch(setupAudioDeviceScannerMock())
 
@@ -224,14 +228,14 @@ class ModernAudioSwitchTest : BaseTest() {
 
             assertThat(availableAudioDevices.size, equalTo(3))
             assertThat(
-                availableAudioDevices.containsAll(
-                    listOf(
-                        AudioDevice.BluetoothHeadset(),
-                        AudioDevice.WiredHeadset(),
-                        AudioDevice.Speakerphone()
-                    )
-                ),
-                equalTo(true)
+                    availableAudioDevices.containsAll(
+                            listOf(
+                                    AudioDevice.BluetoothHeadset(),
+                                    AudioDevice.WiredHeadset(),
+                                    AudioDevice.Speakerphone()
+                            )
+                    ),
+                    equalTo(true)
             )
         }
     }
@@ -239,7 +243,7 @@ class ModernAudioSwitchTest : BaseTest() {
     @Parameters(source = DefaultDeviceParams::class)
     @Test
     fun `when configuring a new preferred device list, all connected devices should be available but the wired headset`(
-        preferredDeviceList: List<Class<out AudioDevice>>
+            preferredDeviceList: List<Class<out AudioDevice>>
     ) {
         val audioSwitch = getModernAudioSwitch(setupAudioDeviceScannerMock())
 
@@ -253,14 +257,14 @@ class ModernAudioSwitchTest : BaseTest() {
 
             assertThat(availableAudioDevices.size, equalTo(3))
             assertThat(
-                availableAudioDevices.containsAll(
-                    listOf(
-                        AudioDevice.BluetoothHeadset(),
-                        AudioDevice.Earpiece(),
-                        AudioDevice.Speakerphone()
-                    )
-                ),
-                equalTo(true)
+                    availableAudioDevices.containsAll(
+                            listOf(
+                                    AudioDevice.BluetoothHeadset(),
+                                    AudioDevice.Earpiece(),
+                                    AudioDevice.Speakerphone()
+                            )
+                    ),
+                    equalTo(true)
             )
         }
     }
@@ -268,7 +272,7 @@ class ModernAudioSwitchTest : BaseTest() {
     @Parameters(source = DefaultDeviceParams::class)
     @Test
     fun `when configuring a new preferred device list, all connected devices should be available but the wired headset when it is connected and disconnected`(
-        preferredDeviceList: List<Class<out AudioDevice>>
+            preferredDeviceList: List<Class<out AudioDevice>>
     ) {
         val audioSwitch = getModernAudioSwitch(setupAudioDeviceScannerMock())
 
@@ -284,14 +288,14 @@ class ModernAudioSwitchTest : BaseTest() {
 
             assertThat(availableAudioDevices.size, equalTo(3))
             assertThat(
-                availableAudioDevices.containsAll(
-                    listOf(
-                        AudioDevice.BluetoothHeadset(),
-                        AudioDevice.Speakerphone(),
-                        AudioDevice.Earpiece()
-                    )
-                ),
-                equalTo(true)
+                    availableAudioDevices.containsAll(
+                            listOf(
+                                    AudioDevice.BluetoothHeadset(),
+                                    AudioDevice.Speakerphone(),
+                                    AudioDevice.Earpiece()
+                            )
+                    ),
+                    equalTo(true)
             )
         }
     }
@@ -305,12 +309,9 @@ class ModernAudioSwitchTest : BaseTest() {
         audioSwitch.activate()
         audioSwitch.onDeviceConnected(AudioDevice.Earpiece())
 
-        verify(audioSwitch.audioDeviceChangeListener, times(1))?.invoke(
-            listOf(AudioDevice.Earpiece()),
-            AudioDevice.Earpiece()
-        )
+        verify(audioSwitch.audioDeviceChangeListener, times(1))
+                ?.invoke(listOf(AudioDevice.Earpiece()), AudioDevice.Earpiece())
     }
-
 
     @Test
     fun `deactivate should not disable bluetooth sco if not bluetooth headset`() {
@@ -333,11 +334,47 @@ class ModernAudioSwitchTest : BaseTest() {
         verify(audioManager, times(1)).stopBluetoothSco()
     }
 
+    @Test
+    fun `when user selects Earpiece then Speakerphone then Earpiece again and wired headset is plugged in, selected device should switch to WiredHeadset`() {
+        val audioSwitch = getModernAudioSwitch(setupAudioDeviceScannerMock())
+
+        audioSwitch.start(audioDeviceChangeListener)
+        audioSwitch.activate()
+
+        // Step 1: Select Earpiece
+        audioSwitch.selectDevice(AudioDevice.Earpiece())
+        assertThat(audioSwitch.selectedAudioDevice, equalTo(AudioDevice.Earpiece()))
+
+        // Step 2: Select Speakerphone
+        audioSwitch.selectDevice(AudioDevice.Speakerphone())
+        assertThat(audioSwitch.selectedAudioDevice, equalTo(AudioDevice.Speakerphone()))
+
+        // Step 3: Select Earpiece again (userSelectedAudioDevice is Earpiece)
+        audioSwitch.selectDevice(AudioDevice.Earpiece())
+        assertThat(audioSwitch.selectedAudioDevice, equalTo(AudioDevice.Earpiece()))
+
+        // Step 4: Plug in wired headset (Earpiece should be removed from available devices)
+        audioSwitch.onDeviceConnected(AudioDevice.WiredHeadset())
+
+        // After plugging in wired headset, Earpiece is no longer available
+        // so selectedAudioDevice should be WiredHeadset (the first available active device)
+        assertThat(audioSwitch.selectedAudioDevice, equalTo(AudioDevice.WiredHeadset()))
+        assertThat(
+                audioSwitch.availableAudioDevices.contains(AudioDevice.Earpiece()),
+                equalTo(false)
+        )
+        assertThat(
+                audioSwitch.availableAudioDevices.contains(AudioDevice.WiredHeadset()),
+                equalTo(true)
+        )
+    }
+
     private fun simulateNewWiredHeadsetConnection() {
-        val intent = mock<Intent> {
-            whenever(mock.getIntExtra(INTENT_STATE, STATE_UNPLUGGED))
-                .thenReturn(STATE_PLUGGED)
-        }
+        val intent =
+                mock<Intent> {
+                    whenever(mock.getIntExtra(INTENT_STATE, STATE_UNPLUGGED))
+                            .thenReturn(STATE_PLUGGED)
+                }
         wiredHeadsetReceiver.onReceive(context, intent)
     }
 }

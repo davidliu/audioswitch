@@ -221,7 +221,11 @@ abstract class AbstractAudioSwitch
         }
         val wasAdded = this.availableUniqueAudioDevices.add(audioDevice)
         if (audioDevice is WiredHeadset) {
-            this.availableUniqueAudioDevices.removeAll { it is Earpiece }
+            val wasRemoved = this.availableUniqueAudioDevices.removeAll { it is Earpiece }
+            //If the user had selected the ear piece and if its removed, we need to reset the value
+            if (wasRemoved && userSelectedAudioDevice is Earpiece) {
+                userSelectedAudioDevice = null
+            }
         }
         this.selectAudioDevice(wasListChanged = wasAdded)
     }
@@ -359,7 +363,11 @@ abstract class AbstractAudioSwitch
 
     private fun getBestDevice(): AudioDevice? {
         val userSelectedAudioDevice = userSelectedAudioDevice
-        return if (userSelectedAudioDevice != null && this.deviceScanner.isDeviceActive(userSelectedAudioDevice)) {
+        //Ensure user selected audio device exists in available list of devices
+        return if (userSelectedAudioDevice != null 
+                    && this.availableUniqueAudioDevices.contains(userSelectedAudioDevice) 
+                    && this.deviceScanner.isDeviceActive(userSelectedAudioDevice)
+        ) {
             userSelectedAudioDevice
         } else {
             this.availableUniqueAudioDevices.firstOrNull {
