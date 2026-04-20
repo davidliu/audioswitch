@@ -18,6 +18,7 @@ import com.twilio.audioswitch.AudioDevice.WiredHeadset
 import com.twilio.audioswitch.android.BuildWrapper
 import com.twilio.audioswitch.bluetooth.BluetoothHeadsetManager
 import com.twilio.audioswitch.scanners.AudioDeviceScanner
+import com.twilio.audioswitch.scanners.CommunicationDeviceScanner
 import com.twilio.audioswitch.scanners.LegacyAudioDeviceScanner
 import com.twilio.audioswitch.scanners.Scanner
 import com.twilio.audioswitch.wired.WiredHeadsetReceiver
@@ -97,6 +98,18 @@ open class BaseTest {
 
     internal fun getModernAudioSwitch(scanner: AudioDeviceScanner = audioDeviceScanner) =
         AudioSwitch(
+            context = context,
+            logger = logger,
+            audioDeviceManager = audioDeviceManager,
+            audioFocusChangeListener = defaultAudioFocusChangeListener,
+            preferredDeviceList = preferredDeviceList,
+            audioManager = audioManager,
+            handler = handler,
+            scanner = scanner,
+        )
+
+    internal fun getCommDeviceAudioSwitch(scanner: Scanner = CommunicationDeviceScanner(audioManager, handler)) =
+        CommDeviceAudioSwitch(
             context = context,
             logger = logger,
             audioDeviceManager = audioDeviceManager,

@@ -50,6 +50,14 @@ android {
     }
 }
 
+// Java tests that call Kotlin `internal` members rely on JVM-mangled names (e.g. getContext$audioswitch_debug).
+// Pin the module name so those names stay stable across Kotlin/AGP defaults.
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach { task ->
+    if (task.name.contains("UnitTest")) {
+        task.kotlinOptions.freeCompilerArgs += ["-module-name", "audioswitch_debug"]
+    }
+}
+
 dependencies {
     implementation "androidx.annotation:annotation:1.3.0"
     testImplementation 'junit:junit:4.13.2'
