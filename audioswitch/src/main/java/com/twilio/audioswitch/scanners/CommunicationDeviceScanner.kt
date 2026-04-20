@@ -48,12 +48,12 @@ internal class CommunicationDeviceScanner(
 
     override fun start(listener: Scanner.Listener): Boolean {
         this.listener = listener
-        communicationDevicesById = snapshotCommunicationDevicesById()
         audioManager.registerAudioDeviceCallback(this, handler)
         audioManager.addOnCommunicationDeviceChangedListener(
             callbackExecutor,
             communicationDeviceChangedListener
         )
+        notifyCommunicationDeviceListChanged()
         return true
     }
 
