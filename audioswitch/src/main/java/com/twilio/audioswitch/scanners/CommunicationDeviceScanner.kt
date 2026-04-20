@@ -92,6 +92,7 @@ internal class CommunicationDeviceScanner(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.M)
 internal fun AudioDeviceInfo.toTwilioAudioDevice(): AudioDevice? =
     when {
         type == AudioDeviceInfo.TYPE_BLUETOOTH_SCO || type == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP ->
