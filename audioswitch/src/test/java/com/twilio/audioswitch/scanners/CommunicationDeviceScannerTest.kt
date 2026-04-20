@@ -63,6 +63,30 @@ class CommunicationDeviceScannerTest {
     }
 
     @Test
+    fun `start notifies listener for each device already in available communication devices`() {
+        val earpieceInfo = mock<AudioDeviceInfo> {
+            whenever(mock.id).thenReturn(101)
+            whenever(mock.type).thenReturn(AudioDeviceInfo.TYPE_BUILTIN_EARPIECE)
+            whenever(mock.productName).thenReturn("Earpiece")
+        }
+        val speakerInfo = mock<AudioDeviceInfo> {
+            whenever(mock.id).thenReturn(102)
+            whenever(mock.type).thenReturn(AudioDeviceInfo.TYPE_BUILTIN_SPEAKER)
+            whenever(mock.productName).thenReturn("Speaker")
+        }
+        whenever(audioManager.getAvailableCommunicationDevices())
+            .thenReturn(listOf(earpieceInfo, speakerInfo))
+
+        scanner.start(listener)
+
+        assertThat(
+            connected,
+            equalTo(listOf(AudioDevice.Earpiece(), AudioDevice.Speakerphone()))
+        )
+        assertThat(disconnected, equalTo(emptyList()))
+    }
+
+    @Test
     fun `stop unregisters listeners and clears scanner listener`() {
         scanner.start(listener)
         scanner.stop()
