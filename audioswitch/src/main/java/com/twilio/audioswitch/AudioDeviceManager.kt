@@ -96,6 +96,18 @@ internal class AudioDeviceManager(
         audioManager.isSpeakerphoneOn = enable
     }
 
+    @SuppressLint("NewApi")
+    @RequiresApi(Build.VERSION_CODES.S)
+    fun setCommunicationDevice(device: AudioDeviceInfo): Boolean {
+        return audioManager.setCommunicationDevice(device)
+    }
+
+    @SuppressLint("NewApi")
+    @RequiresApi(Build.VERSION_CODES.S)
+    fun clearCommunicationDevice() {
+        audioManager.clearCommunicationDevice()
+    }
+
     fun mute(mute: Boolean) {
         audioManager.isMicrophoneMute = mute
     }
