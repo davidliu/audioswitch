@@ -8,6 +8,8 @@ import android.os.Handler
 import androidx.annotation.RequiresApi
 import androidx.annotation.VisibleForTesting
 import com.twilio.audioswitch.AudioDevice
+import com.twilio.audioswitch.android.Logger
+import com.twilio.audioswitch.android.ProductionLogger
 import java.util.concurrent.Executor
 
 /**
@@ -22,7 +24,12 @@ import java.util.concurrent.Executor
 internal class CommunicationDeviceScanner(
     private val audioManager: AudioManager,
     private val handler: Handler,
+    private val logger: Logger = ProductionLogger(loggingEnabled = false),
 ) : AudioDeviceCallback(), Scanner {
+
+    companion object {
+        private const val TAG = "CommunicationDeviceScanner"
+    }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     internal var listener: Scanner.Listener? = null
@@ -58,8 +65,16 @@ internal class CommunicationDeviceScanner(
     }
 
     override fun stop(): Boolean {
-        audioManager.removeOnCommunicationDeviceChangedListener(communicationDeviceChangedListener)
-        audioManager.unregisterAudioDeviceCallback(this)
+        try {
+            audioManager.removeOnCommunicationDeviceChangedListener(communicationDeviceChangedListener)
+        } catch (e: Exception) {
+            logger.e(TAG, "Failed to remove communication device changed listener", e)
+        }
+        try {
+            audioManager.unregisterAudioDeviceCallback(this)
+        } catch (e: Exception) {
+            logger.e(TAG, "Failed to unregister audio device callback", e)
+        }
         this.listener = null
         communicationDevicesById = emptyMap()
         return true

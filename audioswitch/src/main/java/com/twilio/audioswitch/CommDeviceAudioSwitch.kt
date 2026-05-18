@@ -69,7 +69,7 @@ class CommDeviceAudioSwitch : AbstractAudioSwitch {
             audioFocusChangeListener = audioFocusChangeListener
         ),
         handler: Handler = Handler(Looper.getMainLooper()),
-        scanner: Scanner = CommunicationDeviceScanner(audioManager, handler),
+        scanner: Scanner = CommunicationDeviceScanner(audioManager, handler, logger),
     ) : super(
         context = context,
         audioFocusChangeListener = audioFocusChangeListener,

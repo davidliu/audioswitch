@@ -10,6 +10,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import com.twilio.audioswitch.AudioDevice
+import com.twilio.audioswitch.UnitTestLogger
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
@@ -48,7 +49,7 @@ class CommunicationDeviceScannerTest {
     @Before
     fun setUp() {
         whenever(audioManager.getAvailableCommunicationDevices()).thenReturn(emptyList())
-        scanner = CommunicationDeviceScanner(audioManager, handler)
+        scanner = CommunicationDeviceScanner(audioManager, handler, UnitTestLogger())
         connected.clear()
         disconnected.clear()
     }
@@ -84,6 +85,18 @@ class CommunicationDeviceScannerTest {
             equalTo(listOf(AudioDevice.Earpiece(), AudioDevice.Speakerphone()))
         )
         assertThat(disconnected, equalTo(emptyList()))
+    }
+
+    @Test
+    fun `stop continues when removeOnCommunicationDeviceChangedListener throws`() {
+        scanner.start(listener)
+        whenever(audioManager.removeOnCommunicationDeviceChangedListener(any()))
+            .thenThrow(IllegalArgumentException("unregistered listener"))
+
+        scanner.stop()
+
+        verify(audioManager).unregisterAudioDeviceCallback(scanner)
+        assertThat(scanner.listener, nullValue())
     }
 
     @Test

@@ -4,6 +4,7 @@ import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import com.twilio.audioswitch.scanners.CommunicationDeviceScanner
@@ -29,6 +30,17 @@ class CommDeviceAudioSwitchTest : BaseTest() {
         assertThat(scanner.listener, equalTo(audioSwitch))
         verify(audioManager).registerAudioDeviceCallback(scanner, handler)
         verify(audioManager).addOnCommunicationDeviceChangedListener(any(), any())
+    }
+
+    @Test
+    fun `stop before start should not unregister listeners`() {
+        val audioSwitch = getCommDeviceAudioSwitch()
+        val scanner = audioSwitch.deviceScanner as CommunicationDeviceScanner
+
+        audioSwitch.stop()
+
+        verify(audioManager, never()).removeOnCommunicationDeviceChangedListener(any())
+        verify(audioManager, never()).unregisterAudioDeviceCallback(scanner)
     }
 
     @Test
