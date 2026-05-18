@@ -108,7 +108,9 @@ open class BaseTest {
             scanner = scanner,
         )
 
-    internal fun getCommDeviceAudioSwitch(scanner: Scanner = CommunicationDeviceScanner(audioManager, handler)) =
+    internal fun getCommDeviceAudioSwitch(
+        scanner: Scanner = CommunicationDeviceScanner(audioManager, handler, logger),
+    ) =
         CommDeviceAudioSwitch(
             context = context,
             logger = logger,
